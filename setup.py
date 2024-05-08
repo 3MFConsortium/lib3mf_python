@@ -23,7 +23,7 @@ else:
 
 setup(
     name='lib3mf',
-    version='2.3.1',
+    version='2.3.1.post1',
     description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
     packages=find_packages(),
     include_package_data=True,
