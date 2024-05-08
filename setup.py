@@ -22,7 +22,7 @@ else:
     raise FileNotFoundError("The lib3mf shared library could not be found.")
 
 setup(
-    name='test-lib3mf',
+    name='lib3mf',
     version='2.3.1',
     packages=find_packages(),
     include_package_data=True,
