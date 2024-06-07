@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 import os
+import requests
 
 # Function to find the real path of the shared library
 def find_real_lib_path():
@@ -21,10 +22,20 @@ if real_lib_path:
 else:
     raise FileNotFoundError("The lib3mf shared library could not be found.")
 
+# Download the README file and read its content
+readme_url = "https://raw.githubusercontent.com/3MFConsortium/lib3mf/master/README.md"
+response = requests.get(readme_url)
+if response.status_code == 200:
+    long_description = response.text
+else:
+    raise Exception("Failed to download README.md")
+
 setup(
     name='lib3mf',
-    version='2.3.1.post1',
+    version='2.3.1.post2',
     description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
