@@ -40,23 +40,22 @@ with open("create_cube_example_complete.py", "r", encoding="utf-8") as file:
 
 # Append the example to the README content
 readme_content += f"\n\n## An example to create a cube using lib3mf\n\n```python\n{create_cube_example_complete}\n```"
-print(readme_content)
 
 # Setup script
-# setup(
-#     name='lib3mf',
-#     version='2.3.1.post3',
-#     description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
-#     long_description=readme_content,
-#     long_description_content_type='text/markdown',
-#     packages=find_packages(),
-#     include_package_data=True,
-#     zip_safe=False,
-#     classifiers=[
-#         'Development Status :: 5 - Production/Stable',
-#         'Intended Audience :: Developers',
-#         'License :: OSI Approved :: BSD License',
-#         'Programming Language :: Python :: 3',
-#         'Operating System :: OS Independent',
-#     ],
-# )
+setup(
+    name='lib3mf',
+    version='2.3.1.post3',
+    description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
+    long_description=readme_content,
+    long_description_content_type='text/markdown',
+    packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Programming Language :: Python :: 3',
+        'Operating System :: OS Independent',
+    ],
+)
