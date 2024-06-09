@@ -38,13 +38,16 @@ readme_content = download_file(readme_url)
 with open("create_cube_example_complete.py", "r", encoding="utf-8") as file:
     create_cube_example_complete = file.read()
 
-# Append the example to the README content
-readme_content += f"\n\n## An example to create a cube using lib3mf\n\n```python\n{create_cube_example_complete}\n```"
+# Insert the example before the documentation section
+readme_parts = readme_content.split("## Documentation")
+readme_content = readme_parts[0] + "\n\n## Example (Create Cube)\n\n```python\n" + create_cube_example_complete + "\n```\n\n## Documentation" + readme_parts[1]
+
+print(readme_content)
 
 # Setup script
 setup(
     name='lib3mf',
-    version='2.3.1.post3',
+    version='2.3.1.post4',
     description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
     long_description=readme_content,
     long_description_content_type='text/markdown',
