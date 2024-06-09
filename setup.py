@@ -22,28 +22,41 @@ if real_lib_path:
 else:
     raise FileNotFoundError("The lib3mf shared library could not be found.")
 
-# Download the README file and read its content
-readme_url = "https://raw.githubusercontent.com/3MFConsortium/lib3mf/master/README.md"
-response = requests.get(readme_url)
-if response.status_code == 200:
-    long_description = response.text
-else:
-    raise Exception("Failed to download README.md")
+# Function to download a file from a URL
+def download_file(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.text
+    else:
+        raise Exception(f"Failed to download file from {url}")
 
-setup(
-    name='lib3mf',
-    version='2.3.1.post2',
-    description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
-    long_description=long_description,
-    long_description_content_type='text/markdown',
-    packages=find_packages(),
-    include_package_data=True,
-    zip_safe=False,
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Programming Language :: Python :: 3',
-        'Operating System :: OS Independent',
-    ],
-)
+# Download the README file
+readme_url = "https://raw.githubusercontent.com/3MFConsortium/lib3mf/master/README.md"
+readme_content = download_file(readme_url)
+
+# Read the example script content
+with open("create_cube_example_complete.py", "r", encoding="utf-8") as file:
+    create_cube_example_complete = file.read()
+
+# Append the example to the README content
+readme_content += f"\n\n## An example to create a cube using lib3mf\n\n```python\n{create_cube_example_complete}\n```"
+print(readme_content)
+
+# Setup script
+# setup(
+#     name='lib3mf',
+#     version='2.3.1.post3',
+#     description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
+#     long_description=readme_content,
+#     long_description_content_type='text/markdown',
+#     packages=find_packages(),
+#     include_package_data=True,
+#     zip_safe=False,
+#     classifiers=[
+#         'Development Status :: 5 - Production/Stable',
+#         'Intended Audience :: Developers',
+#         'License :: OSI Approved :: BSD License',
+#         'Programming Language :: Python :: 3',
+#         'Operating System :: OS Independent',
+#     ],
+# )
