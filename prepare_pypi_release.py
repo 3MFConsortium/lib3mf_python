@@ -4,6 +4,7 @@ import requests
 import zipfile
 import io
 import shutil
+import subprocess
 
 # Download SDK directly to zip object
 def download_sdk_zip(url):
@@ -73,6 +74,22 @@ def update_setup_file(version):
 
     print(f"Updated {setup_file} with version {new_version} and README URL {new_readme_url}")
 
+# Is it there already ?
+def check_version_exists_on_pypi(package_name, version):
+    url = f"https://pypi.org/pypi/{package_name}/{version}/json"
+    response = requests.get(url)
+    return response.status_code == 200
+
+# Deal with git also here
+def git_commit_and_push(version, update_existing=False):
+    try:
+        commit_message = f"Updating Release version {version}" if update_existing else f"Release version {version}"
+        subprocess.run(['git', 'add', '.'], check=True)
+        subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+        subprocess.run(['git', 'push'], check=True)
+        print(f"Successfully committed and pushed: {commit_message}")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while trying to commit and push: {e}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -90,3 +107,5 @@ if __name__ == "__main__":
         os.makedirs(lib3mf_dir)
 
     extract_bin_and_bindings(zip_file, lib3mf_dir)
+
+    git_commit_and_push(version)
