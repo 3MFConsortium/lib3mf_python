@@ -108,4 +108,6 @@ if __name__ == "__main__":
 
     extract_bin_and_bindings(zip_file, lib3mf_dir)
 
-    git_commit_and_push(version)
+    package_name = "lib3mf"
+    update_existing = check_version_exists_on_pypi(package_name, version)
+    git_commit_and_push(version, update_existing)
