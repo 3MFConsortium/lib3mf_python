@@ -19,14 +19,17 @@ jobs:
         pip install -r requirements.txt 
         python setup.py bdist_wheel
 
-    - name: Get wheel name
-      id: set_wheel_name
-      run: echo "WHEEL_NAME=$(ls dist/*.whl)" >> $GITHUB_ENV
+    - name: Capture wheel filename
+      id: wheel_filename
+      run: |
+        WHEEL_FILE=$(ls dist/*.whl | head -n 1)
+        echo "WHEEL_NAME=$WHEEL_FILE" >> $GITHUB_ENV
+        echo "wheel_name=$WHEEL_FILE" >> $GITHUB_OUTPUT
 
     - uses: actions/upload-artifact@v4
       with:
         name: wheel-artifact
-        path: dist/*.whl
+        path: ${{ env.WHEEL_NAME }}
 
   test-wheel:
     needs: build
@@ -48,9 +51,14 @@ jobs:
       with:
         name: wheel-artifact
 
+    - name: Capture wheel filename
+      run: |
+        WHEEL_FILE=$(ls | grep '\.whl' | head -n 1)
+        echo "WHEEL_NAME=$WHEEL_FILE" >> $GITHUB_ENV
+
     - name: Install wheel
       run: |
-        pip install *.whl
+        pip install ${{ env.WHEEL_NAME }}
 
     - name: Test Import
       run: |
@@ -74,6 +82,11 @@ jobs:
       with:
         name: wheel-artifact
 
+    - name: Capture wheel filename
+      run: |
+        WHEEL_FILE=$(ls | grep '\.whl' | head -n 1)
+        echo "WHEEL_NAME=$WHEEL_FILE" >> $GITHUB_ENV
+
     - name: Install dependencies
       run: pip install twine
 
@@ -81,4 +94,4 @@ jobs:
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: twine upload *.whl
+      run: twine upload ${{ env.WHEEL_NAME }}
