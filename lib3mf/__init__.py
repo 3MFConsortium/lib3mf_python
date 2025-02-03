@@ -49,7 +49,7 @@ def get_library_path_for_wrapper():
             return lib_path[:-4]
     if system == "darwin":
         if str(lib_path).endswith(".dylib"):
-            return lib_path[-6]
+            return lib_path[:-6]
 
 # Your existing logic to use the library
 def get_wrapper():
