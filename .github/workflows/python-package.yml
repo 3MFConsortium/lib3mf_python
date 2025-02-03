@@ -29,14 +29,11 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: wheel-artifact
-        path: ${{ env.WHEEL_NAME }}
+        path: dist/*.whl
 
-  test-wheel:
+  test-linux:
     needs: build
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -50,22 +47,76 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: wheel-artifact
+        path: wheel-download
 
-    - name: Capture wheel filename
-      run: |
-        WHEEL_FILE=$(ls | grep '\.whl' | head -n 1)
-        echo "WHEEL_NAME=$WHEEL_FILE" >> $GITHUB_ENV
+    - name: Find wheel file
+      run: echo "WHEEL_NAME=$(find wheel-download -name '*.whl' | head -n 1)" >> $GITHUB_ENV
 
     - name: Install wheel
-      run: |
-        pip install ${{ env.WHEEL_NAME }}
+      run: pip install ${{ env.WHEEL_NAME }}
 
     - name: Test Import
+      run: python -c "from lib3mf import get_wrapper"
+
+  test-windows:
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Download wheel
+      uses: actions/download-artifact@v4
+      with:
+        name: wheel-artifact
+        path: wheel-download
+
+    - name: Find wheel file (Windows)
+      shell: powershell
       run: |
-        python -c "from lib3mf import get_wrapper"
+        $WHEEL_FILE = Get-ChildItem -Path wheel-download -Filter "*.whl" | Select-Object -ExpandProperty FullName
+        echo "WHEEL_NAME=$WHEEL_FILE" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+    - name: Install wheel
+      run: pip install "%WHEEL_NAME%"
+
+    - name: Test Import
+      run: python -c "from lib3mf import get_wrapper"
+
+  test-macos:
+    needs: build
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Download wheel
+      uses: actions/download-artifact@v4
+      with:
+        name: wheel-artifact
+        path: wheel-download
+
+    - name: Find wheel file (macOS)
+      run: echo "WHEEL_NAME=$(find wheel-download -name '*.whl' | head -n 1)" >> $GITHUB_ENV
+
+    - name: Install wheel
+      run: pip install ${{ env.WHEEL_NAME }}
+
+    - name: Test Import
+      run: python -c "from lib3mf import get_wrapper"
 
   publish:
-    needs: test-wheel
+    needs: [test-linux, test-windows, test-macos]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
@@ -81,11 +132,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: wheel-artifact
+        path: wheel-download
 
-    - name: Capture wheel filename
-      run: |
-        WHEEL_FILE=$(ls | grep '\.whl' | head -n 1)
-        echo "WHEEL_NAME=$WHEEL_FILE" >> $GITHUB_ENV
+    - name: Find wheel file
+      run: echo "WHEEL_NAME=$(find wheel-download -name '*.whl' | head -n 1)" >> $GITHUB_ENV
 
     - name: Install dependencies
       run: pip install twine
