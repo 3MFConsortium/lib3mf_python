@@ -20,16 +20,13 @@ jobs:
         python setup.py bdist_wheel
 
     - name: Capture wheel filename
-      id: wheel_filename
       run: |
-        WHEEL_FILE=$(ls dist/*.whl | head -n 1)
-        echo "WHEEL_NAME=$WHEEL_FILE" >> $GITHUB_ENV
-        echo "wheel_name=$WHEEL_FILE" >> $GITHUB_OUTPUT
+        echo "WHEEL_NAME=$(python -c "import os, glob; print(glob.glob('dist/*.whl')[0])")" >> $GITHUB_ENV
 
     - uses: actions/upload-artifact@v4
       with:
         name: wheel-artifact
-        path: dist/*.whl
+        path: ${{ env.WHEEL_NAME }}
 
   test-linux:
     needs: build
@@ -49,8 +46,8 @@ jobs:
         name: wheel-artifact
         path: wheel-download
 
-    - name: Find wheel file
-      run: echo "WHEEL_NAME=$(find wheel-download -name '*.whl' | head -n 1)" >> $GITHUB_ENV
+    - name: Find wheel file (Python)
+      run: echo "WHEEL_NAME=$(python -c "import os, glob; print(glob.glob('wheel-download/*.whl')[0])")" >> $GITHUB_ENV
 
     - name: Install wheel
       run: pip install ${{ env.WHEEL_NAME }}
@@ -76,14 +73,11 @@ jobs:
         name: wheel-artifact
         path: wheel-download
 
-    - name: Find wheel file (Windows)
-      shell: powershell
-      run: |
-        $WHEEL_FILE = Get-ChildItem -Path wheel-download -Filter "*.whl" | Select-Object -ExpandProperty FullName
-        echo "WHEEL_NAME=$WHEEL_FILE" | Out-File -FilePath $env:GITHUB_ENV -Append
+    - name: Find wheel file (Python)
+      run: echo "WHEEL_NAME=$(python -c "import os, glob; print(glob.glob('wheel-download/*.whl')[0])")" >> $GITHUB_ENV
 
     - name: Install wheel
-      run: pip install "%WHEEL_NAME%"
+      run: pip install ${{ env.WHEEL_NAME }}
 
     - name: Test Import
       run: python -c "from lib3mf import get_wrapper"
@@ -106,8 +100,8 @@ jobs:
         name: wheel-artifact
         path: wheel-download
 
-    - name: Find wheel file (macOS)
-      run: echo "WHEEL_NAME=$(find wheel-download -name '*.whl' | head -n 1)" >> $GITHUB_ENV
+    - name: Find wheel file (Python)
+      run: echo "WHEEL_NAME=$(python -c "import os, glob; print(glob.glob('wheel-download/*.whl')[0])")" >> $GITHUB_ENV
 
     - name: Install wheel
       run: pip install ${{ env.WHEEL_NAME }}
@@ -134,8 +128,8 @@ jobs:
         name: wheel-artifact
         path: wheel-download
 
-    - name: Find wheel file
-      run: echo "WHEEL_NAME=$(find wheel-download -name '*.whl' | head -n 1)" >> $GITHUB_ENV
+    - name: Find wheel file (Python)
+      run: echo "WHEEL_NAME=$(python -c "import os, glob; print(glob.glob('wheel-download/*.whl')[0])")" >> $GITHUB_ENV
 
     - name: Install dependencies
       run: pip install twine
