@@ -73,14 +73,24 @@ jobs:
         name: wheel-artifact
         path: wheel-download
 
-    - name: Find wheel file (Python)
-      run: echo "WHEEL_NAME=$(python -c "import os, glob; print(glob.glob('wheel-download/*.whl')[0])")" >> $GITHUB_ENV
+    - name: Find wheel file (Windows)
+      shell: powershell
+      run: |
+        $wheel_file = python -c "import glob; print(glob.glob('wheel-download/*.whl')[0])"
+        echo "WHEEL_NAME=$wheel_file" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "Wheel file found: $wheel_file"
 
     - name: Install wheel
-      run: pip install ${{ env.WHEEL_NAME }}
+      shell: powershell
+      run: |
+        if (-not $env:WHEEL_NAME) { throw "Wheel file name is empty!" }
+        pip install "$env:WHEEL_NAME"
 
     - name: Test Import
-      run: python -c "from lib3mf import get_wrapper"
+      shell: powershell
+      run: |
+        python -c "from lib3mf import get_wrapper"
+
 
   test-macos:
     needs: build
