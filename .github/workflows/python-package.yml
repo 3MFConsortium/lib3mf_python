@@ -18,7 +18,7 @@ jobs:
       run: pip install wheel requests
 
     - name: Build Linux wheel (manylinux_x86_64)
-      run: python setup.py bdist_wheel --plat-name manylinux_x86_64
+      run: python setup.py bdist_wheel --python-tag py3 --plat-name manylinux2014_x86_64
 
     - name: Store wheel filename
       run: echo "WHEEL_NAME=$(ls dist/*.whl | head -n 1)" >> $GITHUB_ENV
