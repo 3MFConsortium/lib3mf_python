@@ -71,7 +71,9 @@ jobs:
       run: pip install wheel requests
 
     - name: Build macOS wheel (macosx_universal2)
-      run: python setup.py bdist_wheel --plat-name macosx_universal2
+      run: |
+        python -c "from pip._vendor.packaging.tags import cpython_tags; print('\n'.join(str(t) for t in cpython_tags()))"
+        python setup.py bdist_wheel --python-tag py3 --plat-name macosx_10_9_universal2
 
     - name: Store wheel filename
       run: echo "WHEEL_NAME=$(ls dist/*.whl | head -n 1)" >> $GITHUB_ENV
