@@ -99,8 +99,11 @@ jobs:
         name: linux-wheel
         path: wheel-download
 
+    - name: Find wheel file (Python)
+      run: echo "LINUX_WHEEL_NAME=$(python -c "import os, glob; print(glob.glob('wheel-download/*.whl')[0])")" >> $GITHUB_ENV
+
     - name: Install wheel
-      run: pip install wheel-download/*.whl
+      run: pip install ${{ env.LINUX_WHEEL_NAME }}
 
     - name: Test Import
       run: python -c "from lib3mf import get_wrapper"
@@ -149,8 +152,11 @@ jobs:
         name: macos-wheel
         path: wheel-download
 
+    - name: Identify OSX Wheel
+      run: echo "OSX_WHEEL_NAME=$(python -c "import os, glob; print(glob.glob('wheel-download/*.whl')[0])")" >> $GITHUB_ENV
+
     - name: Install wheel
-      run: pip install wheel-download/*.whl
+      run: pip install ${{ env.OSX_WHEEL_NAME }}
 
     - name: Test Import
       run: python -c "from lib3mf import get_wrapper"
