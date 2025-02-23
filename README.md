@@ -9,3 +9,11 @@ python prepare_pypi_release 2.3.2
 ```
 
 Based on the version number, all the necessary artifacts are automatically updated in the repository and it simply needs to be pushed to git
+
+For manually building, kindly run the following script
+
+```shell
+python build_wheels.py
+```
+
+This will automatically recognize the platform and build the relevant wheel

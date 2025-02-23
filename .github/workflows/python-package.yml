@@ -18,7 +18,7 @@ jobs:
       run: pip install wheel requests
 
     - name: Build Linux wheel (manylinux_x86_64)
-      run: python setup.py bdist_wheel --python-tag py3 --plat-name manylinux2014_x86_64
+      run: python build_wheels.py
 
     - name: Store wheel filename
       run: echo "WHEEL_NAME=$(ls dist/*.whl | head -n 1)" >> $GITHUB_ENV
@@ -43,7 +43,7 @@ jobs:
       run: pip install wheel requests
 
     - name: Build Windows wheel (win_amd64)
-      run: python setup.py bdist_wheel --plat-name win_amd64
+      run: python build_wheels.py
 
     - name: Store wheel filename
       shell: powershell
@@ -72,7 +72,7 @@ jobs:
 
     - name: Build macOS wheel (macosx_universal2)
       run: |
-        python setup.py bdist_wheel --python-tag py3 --plat-name macosx_10_9_universal2
+        python build_wheels.py
 
     - name: Store wheel filename
       run: echo "WHEEL_NAME=$(ls dist/*.whl | head -n 1)" >> $GITHUB_ENV
