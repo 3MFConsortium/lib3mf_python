@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
     version = sys.argv[1]
     update_setup_file(version)
-    sdk_url = f"https://github.com/3MFConsortium/lib3mf/releases/download/v{version}/lib3mf_sdk_v{version}.zip"
+    sdk_url = f"https://github.com/3MFConsortium/lib3mf/releases/download/v.{version}/lib3mf_sdk_v{version}.zip"
 
     zip_file = download_sdk_zip(sdk_url)
 
