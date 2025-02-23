@@ -48,7 +48,7 @@ def download_file(url):
         raise Exception(f"Failed to download file from {url}")
 
 # Download the README file
-readme_url = "https://raw.githubusercontent.com/3MFConsortium/lib3mf/release/2.4.1-alpha/README.md"
+readme_url = "https://raw.githubusercontent.com/3MFConsortium/lib3mf/release/2.3.2/README.md"
 readme_content = download_file(readme_url)
 
 # Read the example script content
@@ -64,7 +64,7 @@ print(readme_content)
 # Setup script
 setup(
     name='lib3mf',
-    version='2.4.1a1',
+    version='2.3.2',
     description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
     long_description=readme_content,
     long_description_content_type='text/markdown',
