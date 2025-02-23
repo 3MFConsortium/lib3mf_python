@@ -1,2 +1,5 @@
 *.zip
 *.pyc
+build
+dist
+lib3mf.egg-info

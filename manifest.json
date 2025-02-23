@@ -1,0 +1,5 @@
+{
+    "linux": "lib3mf/lib3mf.so",
+    "windows": "lib3mf/lib3mf.dll",
+    "macos": "lib3mf/lib3mf.dylib"
+}
