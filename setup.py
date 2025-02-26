@@ -64,7 +64,7 @@ print(readme_content)
 # Setup script
 setup(
     name='lib3mf',
-    version='2.4.1',
+    version='2.4.1rc1',
     description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
     long_description=readme_content,
     long_description_content_type='text/markdown',
