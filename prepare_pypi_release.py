@@ -86,6 +86,7 @@ def git_commit_and_push(version, update_existing=False):
         commit_message = f"Updating Release version {version}" if update_existing else f"Release version {version}"
         subprocess.run(['git', 'add', '.'], check=True)
         subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+        subprocess.run(['git', 'tag', version], check=True)
         subprocess.run(['git', 'push'], check=True)
         print(f"Successfully committed and pushed: {commit_message}")
     except subprocess.CalledProcessError as e:
