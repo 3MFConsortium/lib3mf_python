@@ -2,7 +2,6 @@ from setuptools import setup, find_packages
 import os
 import sys
 import platform
-import requests
 
 # Function to find the real path of the shared library
 def find_real_lib_path():
@@ -38,28 +37,8 @@ if current_platform not in SUPPORTED_PLATFORMS or current_arch not in SUPPORTED_
         f"This package only supports Linux (amd64), Windows (x86_64), and macOS (universal). "
         f"Your platform ({current_platform} {current_arch}) is not supported."
     )
-
-# Function to download a file from a URL
-def download_file(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.text
-    else:
-        raise Exception(f"Failed to download file from {url}")
-
-# Download the README file
-readme_url = "https://raw.githubusercontent.com/3MFConsortium/lib3mf/release/2.4.1/README.md"
-readme_content = download_file(readme_url)
-
-# Read the example script content
-with open("create_cube_example_complete.py", "r", encoding="utf-8") as file:
-    create_cube_example_complete = file.read()
-
-# Insert the example before the documentation section
-readme_parts = readme_content.split("## Documentation")
-readme_content = readme_parts[0] + "\n\n## Example (Create Cube)\n\n```python\n" + create_cube_example_complete + "\n```\n\n## Documentation" + readme_parts[1]
-
-print(readme_content)
+with open("README-base.md","r") as file:
+    readme_content = file.read()
 
 # Setup script
 setup(

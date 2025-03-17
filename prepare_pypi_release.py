@@ -14,6 +14,12 @@ def download_sdk_zip(url):
     else:
         raise Exception(f"Failed to download SDK zip from {url}")
 
+def download_file(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.text
+    else:
+        raise Exception(f"Failed to download file from {url}")
 
 # Clean up and remove unnecessary stuff from lib3mf directory
 def clean_lib3mf_directory(lib3mf_dir):
@@ -55,24 +61,25 @@ def extract_bin_and_bindings(zip_file, lib3mf_dir):
     clean_lib3mf_directory(lib3mf_dir)
 
 
-# Update the contents of setup.py folder
-def update_setup_file(version):
-    setup_file = "setup.py"
-    new_readme_url = f"https://raw.githubusercontent.com/3MFConsortium/lib3mf/release/{version}/README.md"
-    new_version = version
+# Update the "real" README file
+def update_readme(version):
+    # Download the README file
+    readme_file = "README-base.md"
+    readme_url = f"https://raw.githubusercontent.com/3MFConsortium/lib3mf/release/{version}/README.md"
+    readme_content = download_file(readme_url)
 
-    with open(setup_file, "r", encoding="utf-8") as file:
-        lines = file.readlines()
+    # Read the example script content
+    with open("create_cube_example_complete.py", "r", encoding="utf-8") as file:
+        create_cube_example_complete = file.read()
 
-    with open(setup_file, "w", encoding="utf-8") as file:
-        for line in lines:
-            if line.strip().startswith("readme_url = "):
-                line = f'readme_url = "{new_readme_url}"\n'
-            if line.strip().startswith("version="):
-                line = f"    version='{new_version}',\n"
-            file.write(line)
+    # Insert the example before the documentation section
+    readme_parts = readme_content.split("## Documentation")
+    readme_content = readme_parts[0] + "\n\n## Example (Create Cube)\n\n```python\n" + create_cube_example_complete + "\n```\n\n## Documentation" + readme_parts[1]
 
-    print(f"Updated {setup_file} with version {new_version} and README URL {new_readme_url}")
+    with open(readme_file, "w", encoding="utf-8") as file:
+        file.write(readme_content)
+
+    print(f"Updated {readme_file} with version {version} from README URL {readme_url}")
 
 # Is it there already ?
 def check_version_exists_on_pypi(package_name, version):
@@ -97,7 +104,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     version = sys.argv[1]
-    update_setup_file(version)
+    update_readme(version)
     sdk_url = f"https://github.com/3MFConsortium/lib3mf/releases/download/v{version}/lib3mf_sdk_v{version}.zip"
 
     zip_file = download_sdk_zip(sdk_url)
