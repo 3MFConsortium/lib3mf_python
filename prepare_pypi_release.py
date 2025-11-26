@@ -1,21 +1,22 @@
 import os
 import sys
-import requests
-import zipfile
 import io
 import shutil
 import subprocess
+import zipfile
+
+import requests
 
 # Download SDK directly to zip object
 def download_sdk_zip(url):
-    response = requests.get(url)
+    response = requests.get(url, timeout=30)
     if response.status_code == 200:
         return zipfile.ZipFile(io.BytesIO(response.content))
     else:
         raise Exception(f"Failed to download SDK zip from {url}")
 
 def download_file(url):
-    response = requests.get(url)
+    response = requests.get(url, timeout=30)
     if response.status_code == 200:
         return response.text
     else:
@@ -26,10 +27,16 @@ def clean_lib3mf_directory(lib3mf_dir):
     valid_extensions = {'.so', '.dylib', '.dll', 'Lib3MF.py', '__init__.py'}
     before_path = os.getcwd()
     os.chdir(lib3mf_dir)
-    for item in os.listdir():
-        if not any(item.endswith(ext) for ext in valid_extensions):
-            os.unlink(item)
-    os.chdir(before_path)
+    try:
+        for item in os.listdir():
+            if any(item.endswith(ext) for ext in valid_extensions):
+                continue
+            if os.path.isdir(item):
+                shutil.rmtree(item)
+            else:
+                os.unlink(item)
+    finally:
+        os.chdir(before_path)
     print("Remove unnecessary files and cleaned up the lib3mf directory")
 
 
@@ -69,12 +76,17 @@ def update_readme(version):
     readme_content = download_file(readme_url)
 
     # Read the example script content
-    with open("create_cube_example_complete.py", "r", encoding="utf-8") as file:
+    with open("examples/create_cube_example_complete.py", "r", encoding="utf-8") as file:
         create_cube_example_complete = file.read()
 
     # Insert the example before the documentation section
-    readme_parts = readme_content.split("## Documentation")
-    readme_content = readme_parts[0] + "\n\n## Example (Create Cube)\n\n```python\n" + create_cube_example_complete + "\n```\n\n## Documentation" + readme_parts[1]
+    marker = "## Documentation"
+    if marker in readme_content:
+        readme_parts = readme_content.split(marker, 1)
+        readme_content = readme_parts[0] + "\n\n## Example (Create Cube)\n\n```python\n" + create_cube_example_complete + "\n```\n\n" + marker + readme_parts[1]
+    else:
+        # Fallback: append the example to the end
+        readme_content = readme_content + "\n\n## Example (Create Cube)\n\n```python\n" + create_cube_example_complete + "\n```\n"
 
     with open(readme_file, "w", encoding="utf-8") as file:
         file.write(readme_content)

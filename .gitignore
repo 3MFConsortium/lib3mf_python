@@ -2,4 +2,5 @@
 *.pyc
 build
 dist
+.idea
 lib3mf.egg-info

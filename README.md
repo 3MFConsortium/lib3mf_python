@@ -34,5 +34,6 @@ This script automatically detects the platform and builds the appropriate wheel.
 ## Automatic python wheel building and publishing
 
 Every commit automatically builds and tests the python wheels for all 3 platforms.
-However, to publish them to PyPI, the commit message should contain the string `PUBLISH_NOW`
-Without this string, deployment to PyPI will be skipped.
+Publishing to PyPI now happens only when a version tag is pushed (e.g. `v1.2.3`).
+Push a tag after merging to trigger the publish step; regular commits and PRs continue
+to build and test without deploying.
