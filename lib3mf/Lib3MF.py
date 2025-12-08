@@ -778,6 +778,7 @@ class ObjectType(CTypesEnum):
 	Model = 1
 	Support = 2
 	SolidSupport = 3
+	Surface = 4
 '''Definition of TextureType
 '''
 class TextureType(CTypesEnum):
