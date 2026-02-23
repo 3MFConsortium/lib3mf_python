@@ -43,7 +43,7 @@ with open("README-base.md","r") as file:
 # Setup script
 setup(
     name='lib3mf',
-    version='2.4.1.post1',
+    version='2.5.0',
     description='lib3mf is an implementation of the 3D Manufacturing Format file standard',
     long_description=readme_content,
     long_description_content_type='text/markdown',
